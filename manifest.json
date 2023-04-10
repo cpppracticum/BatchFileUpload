@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Yandex Practicum — Batch File Upload",
+  "version": "1.0.5",
+  "description": "Расширение включает функцию загрузки нескольких файлов в тренажёр Яндекс Практикум. Для загрузки перетащите файлы в окно кода.",  
+  "permissions": [
+    "scripting"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://practicum.yandex.ru/trainer/*"],
+      "js": ["injector.js"],
+      "css": ["uploader.css"]
+    }
+  ],
+  "web_accessible_resources": [{
+    "resources": ["uploader.js"],
+    "matches": ["<all_urls>"]
+  }],
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
