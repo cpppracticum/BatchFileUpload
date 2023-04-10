@@ -52,7 +52,7 @@ function getFileIndex(filename) {
 }
 
 function setFileContentByIndex(index, text) {
-  const mirrors = document.querySelectorAll('.CodeMirror');
+  const mirrors = document.querySelector('.trainer-editor__tabs-content').querySelectorAll('.CodeMirror');
   if (index >= 0 && index < mirrors.length) {
     const code_mirror = mirrors[index].CodeMirror;
     code_mirror.setValue(text);
@@ -60,7 +60,7 @@ function setFileContentByIndex(index, text) {
 }
 
 function setActiveFileContent(text) {
-  const top_tabs = [...document.querySelectorAll('.tabs-group__item')];
+  const top_tabs = [...document.querySelector('.trainer-editor__tabs-header').querySelectorAll('.tabs-group__item')];
   top_active = top_tabs.map(x => x.classList.contains('tab_active'));
   const pos = top_active.indexOf(true);
   if (pos < 0)
