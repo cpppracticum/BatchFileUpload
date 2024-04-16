@@ -1,4 +1,5 @@
 var left_tab_map;
+var top_tab_map;
 var drag_counter = 0;
 var upload_queue = [];
 var upload_queue_processing = false;
@@ -14,7 +15,7 @@ function scheduleFile(file, content) {
 
 function doQueuedUploads() {
   upload_queue_processing = true;
-  if (upload_queue.length == 0) {
+  if (upload_queue.length === 0) {
     upload_queue_processing = false;
     return;
   }
@@ -27,12 +28,17 @@ function doQueuedUploads() {
 function doSetFileByName(file, text, next) {
   const tabs = document.querySelectorAll('.tabs-group__item');
 
-  if (!(file.name in left_tab_map)) {
+  if (file.name in left_tab_map) {
+    left_tab_map[file.name].click();
+  }
+  else if (file.name in top_tab_map) {
+    top_tab_map[file.name].click();
+  }
+  else {
     next();
     return;
   }
 
-  left_tab_map[file.name].click();
 
   setTimeout(() => {
     const index = getFileIndex(file.name);
@@ -63,8 +69,9 @@ function setActiveFileContent(text) {
   const top_tabs = [...document.querySelector('.trainer-editor__tabs-header').querySelectorAll('.tabs-group__item')];
   top_active = top_tabs.map(x => x.classList.contains('tab_active'));
   const pos = top_active.indexOf(true);
-  if (pos < 0)
+  if (pos < 0) {
     return false;
+  }
   return setFileContentByIndex(pos, text);
 }
 
@@ -114,7 +121,7 @@ function dragReset(ev) {
 function dropHandler(ev) {
   console.log("File(s) dropped");
   dragReset();
-  setupLeftTabs();
+  setupTabs();
   const not_matched = [];
 
   // Prevent default behavior (Prevent file from being opened)
@@ -130,10 +137,12 @@ function dropHandler(ev) {
   }
 
   files.forEach((file, i) => {
-    if (file.name in left_tab_map)
-      uploadFile(file)
-    else
+    if ((file.name in left_tab_map) || (file.name in top_tab_map)){
+      uploadFile(file);
+    }
+    else {
       not_matched.push(file.name);
+    }
   });
 
   if(not_matched.length > 0) {
@@ -141,18 +150,25 @@ function dropHandler(ev) {
   }
 }
 
-function setupLeftTabs() {
+function setupTabs() {
   const left_tabs = document.querySelectorAll('.tree-node-file-system__name');
   left_tab_map = {};
   left_tabs.forEach((elem, i) => {
     left_tab_map[elem.textContent] = elem;
   });
+
+  const top_tabs = document.querySelectorAll('.tabs-group__item.tabs__item');
+  top_tab_map = {};
+  top_tabs.forEach((elem, i) => {
+    top_tab_map[elem.textContent] = elem;
+  });
 }
 
 function setup() {
   const code_parent = document.querySelector('.tabs__content');
-  if (code_parent == setted_up_for)
+  if (code_parent === setted_up_for) {
     return;
+  }
 
   if (code_parent) {
     code_parent.addEventListener('drop', dropHandler);
