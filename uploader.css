@@ -1,3 +1,4 @@
-.tabs__content.dragover .CodeMirror {
-	background: #ddf0c4
+.tabs__content.dragover .CodeMirror,.tabs__content.dragover .monaco-editor {
+	background: #ddf0c4;
+	outline: 3px solid black;
 }

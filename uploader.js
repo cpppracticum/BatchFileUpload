@@ -62,6 +62,8 @@ function setFileContentByIndex(index, text) {
   if (index >= 0 && index < mirrors.length) {
     const code_mirror = mirrors[index].CodeMirror;
     code_mirror.setValue(text);
+  } else if (monaco !== undefined) {
+    monaco.editor.getModels()[index].setValue(text);
   }
 }
 
