@@ -39,10 +39,10 @@ function doSetFileByName(file, text, next) {
     return;
   }
 
-
   setTimeout(() => {
     const index = getFileIndex(file.name);
 
+    console.log(`Setting file ${file.name} with index ${index}`);
     setFileContentByIndex(index, text);
 
     setTimeout(next, 100);
@@ -59,12 +59,20 @@ function getFileIndex(filename) {
 
 function setFileContentByIndex(index, text) {
   const mirrors = document.querySelector('.trainer-editor__tabs-content').querySelectorAll('.CodeMirror');
+  const monacos = document.querySelector('.trainer-editor__tabs-content').querySelectorAll('.trainer-editor__code-editor');
   if (index >= 0 && index < mirrors.length) {
+    console.log(`Setting CodeMirror content`);
     const code_mirror = mirrors[index].CodeMirror;
     code_mirror.setValue(text);
-  } else if (monaco !== undefined) {
-    monaco.editor.getModels()[index].setValue(text);
+    return;
+  } else if (monaco !== undefined && index >= 0 && index < monacos.length) {
+    const domElements = monaco.editor.getEditors().map(x => x.getContainerDomNode());
+    const realIndex = domElements.indexOf(monacos[index]);
+    console.log(`Setting monaco-editor content for index ${realIndex}`);
+    monaco.editor.getModels()[realIndex].setValue(text);
+    return;
   }
+  console.log(`Unable to find code editor for tab ${index}`);
 }
 
 function setActiveFileContent(text) {
@@ -133,7 +141,7 @@ function dropHandler(ev) {
     ? [...ev.dataTransfer.items].filter(x=>x.kind==='file').map(x=>x.getAsFile())
     : [...ev.dataTransfer.files];
 
-  if (files.length == 1) {
+  if (files.length === 1) {
     uploadSingleFile(files[0]);
     return;
   }
